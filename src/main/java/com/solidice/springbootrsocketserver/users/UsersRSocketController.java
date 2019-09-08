@@ -17,4 +17,7 @@ public class UsersRSocketController {
     public Mono<List<User>> usersList() {
         return this.userService.getUsers();
     }
+
+    @MessageMapping("userById")
+    public Mono<User> userById(GetUserByIdRequest request) { return this.userService.getUserById(request.getId()); };
 }
