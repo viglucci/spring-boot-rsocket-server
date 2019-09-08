@@ -17,5 +17,6 @@ message GetUserByIdResponse {
 }
 
 service UserService {
-    rpc getUser (GetUserByIdRequest) returns (GetUserByIdResponse) {}
+    rpc getUser (GetUserByIdRequest) returns (GetUserByIdResponse) {
+    }
 }

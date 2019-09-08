@@ -6,20 +6,16 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-/**
- * @author Kevin
- * @since 9/8/2019
- */
 @Component
 public class UserService {
-	@Autowired
-	private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-	public Mono<List<User>> getUsers() {
-		return Mono.just(userRepository.getUsers());
-	}
+    public Mono<List<User>> getUsers() {
+        return Mono.just(userRepository.getUsers());
+    }
 
-	public Mono<User> getUserById(int id) {
-		return Mono.just(userRepository.getUserById(id));
-	}
+    public Mono<User> getUserById(int id) {
+        return Mono.just(userRepository.getUserById(id));
+    }
 }

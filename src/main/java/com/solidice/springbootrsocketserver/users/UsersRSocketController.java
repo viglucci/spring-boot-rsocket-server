@@ -7,18 +7,14 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-/**
- * @author Kevin
- * @since 9/8/2019
- */
 @Controller
 public class UsersRSocketController {
 
-	@Autowired
-	private UserService userService;
+    @Autowired
+    private UserService userService;
 
-	@MessageMapping("usersList")
-	public Mono<List<User>> usersList() {
-		return this.userService.getUsers();
-	}
+    @MessageMapping("usersList")
+    public Mono<List<User>> usersList() {
+        return this.userService.getUsers();
+    }
 }
