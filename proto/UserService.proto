@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package com.solidice.rsocket.example;
+
+message User {
+    string email = 1;
+    string username = 2;
+    int32 id = 3;
+}
+
+message GetUserByIdRequest {
+    int32 id = 1;
+}
+
+message GetUserByIdResponse {
+    User user = 1;
+}
+
+service UserService {
+    rpc getUser (GetUserByIdRequest) returns (GetUserByIdResponse) {}
+}

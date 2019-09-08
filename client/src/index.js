@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import UserServiceClient from './generated/rsocket/UserService_rsocket_pb';
+
+console.log(UserServiceClient);
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
