@@ -3,7 +3,7 @@ package com.solidice.springbootrsocketserver.users;
 public class User {
     private String email;
     private String username;
-    private int id;
+    private Integer id;
 
     public User() {
     }
@@ -34,7 +34,7 @@ public class User {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 }
