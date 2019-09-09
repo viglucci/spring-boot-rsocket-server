@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringBootRsocketServerApplication {
+public class SpringBootRSocketServerApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringBootRsocketServerApplication.class, args);
+        SpringApplication.run(SpringBootRSocketServerApplication.class, args);
     }
 }
