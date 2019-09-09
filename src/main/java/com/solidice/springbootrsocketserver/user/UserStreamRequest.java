@@ -1,4 +1,4 @@
-package com.solidice.springbootrsocketserver.users;
+package com.solidice.springbootrsocketserver.user;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
