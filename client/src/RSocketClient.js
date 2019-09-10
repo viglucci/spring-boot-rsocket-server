@@ -1,11 +1,8 @@
-import {
-    RSocketClient,
-    JsonSerializers,
-} from 'rsocket-core';
+import { RSocketClient, JsonSerializers } from 'rsocket-core';
 import RSocketWebSocketClient from 'rsocket-websocket-client';
 
 const transport = new RSocketWebSocketClient({
-    url: 'ws://localhost:8081/'
+    url: 'ws://127.0.0.1:8080/ws'
 });
 
 const client = new RSocketClient({
