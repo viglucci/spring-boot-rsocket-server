@@ -1,6 +1,9 @@
 syntax = "proto3";
 
-package com.solidice.rsocket.example;
+package com.solidice.springbootrsocketserver.rpc.proto;
+
+option java_outer_classname = "UserServiceProto";
+option java_multiple_files = true;
 
 message User {
     string email = 1;
@@ -17,5 +20,5 @@ message GetUserByIdResponse {
 }
 
 service UserService {
-    rpc getUser (GetUserByIdRequest) returns (GetUserByIdResponse) {}
+    rpc GetUserById (GetUserByIdRequest) returns (GetUserByIdResponse) {}
 }

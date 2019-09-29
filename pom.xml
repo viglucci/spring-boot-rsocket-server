@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -8,14 +9,17 @@
         <version>2.2.0.M5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.example</groupId>
-    <artifactId>demo</artifactId>
+    <groupId>com.solidice.springbootrsocketserver</groupId>
+    <artifactId>spring-boot-rsocket-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>spring-boot-rsocket-server</name>
     <description>Example spring boot application using rsocket.</description>
 
     <properties>
         <java.version>11</java.version>
+        <protobuf.version>3.6.1</protobuf.version>
+        <rsocketRpc.version>0.2.12</rsocketRpc.version>
+        <springBootStarterRsocket.version>2.2.0.M6</springBootStarterRsocket.version>
     </properties>
 
     <dependencies>
@@ -27,6 +31,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-rsocket</artifactId>
+            <version>${springBootStarterRsocket.version}</version>
         </dependency>
 
         <dependency>
@@ -50,13 +55,84 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <dependency>
+            <groupId>io.rsocket.rpc</groupId>
+            <artifactId>rsocket-rpc-core</artifactId>
+            <version>${rsocketRpc.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.rsocket.rpc</groupId>
+                    <artifactId>rsocket-rpc-protobuf</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>${protobuf.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+        </dependency>
     </dependencies>
 
     <build>
+        <extensions>
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>1.5.0.Final</version>
+            </extension>
+        </extensions>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/protobuf/java</source>
+                                <source>${project.build.directory}/generated-sources/protobuf/rsocketRpc</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.xolstice.maven.plugins</groupId>
+                <artifactId>protobuf-maven-plugin</artifactId>
+                <version>0.5.1</version>
+                <configuration>
+                    <protocArtifact>
+                        com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}
+                    </protocArtifact>
+                    <pluginId>rsocketRpc</pluginId>
+                    <pluginArtifact>
+                        io.rsocket.rpc:rsocket-rpc-protobuf:${rsocketRpc.version}:exe:${os.detected.classifier}
+                    </pluginArtifact>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>compile-custom</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -75,7 +151,16 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>jcenter</id>
+            <url>https://jcenter.bintray.com/</url>
+        </repository>
+        <repository>
+            <id>netifi-oss</id>
+            <url>https://dl.bintray.com/netifi/netifi-oss/</url>
+        </repository>
     </repositories>
+
     <pluginRepositories>
         <pluginRepository>
             <id>spring-milestones</id>

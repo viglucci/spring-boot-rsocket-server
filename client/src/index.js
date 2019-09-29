@@ -27,7 +27,11 @@ import client from './RSocketClient';
 
 client.connect().then((rsocket) => {
     const userService = new UserServiceClient(rsocket);
-    const x = userService.getUser(new GetUserByIdRequest(1));
+    const x = userService.getUser(new GetUserByIdRequest(1)).subscribe({
+        onComplete: data => console.log(data),
+        onError: error => console.error(error),
+        onSubscribe: cancel => {/* call cancel() to stop onComplete/onError */},
+    });
     console.log(x);
 });
 
