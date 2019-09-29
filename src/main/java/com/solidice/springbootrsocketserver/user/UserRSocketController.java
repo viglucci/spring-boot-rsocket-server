@@ -19,14 +19,16 @@ public class UserRSocketController {
     @Autowired
     private UserRepository userRepository;
 
-    @MessageMapping("usersList")
-    public Mono<List<User>> usersList() {
+    @MessageMapping("getUsers")
+    public Mono<UsersListResponse> getUsers() {
         log.info("Handling usersList request.");
-        return Mono.just(this.userRepository.getUsers());
+        List<User> users = this.userRepository.getUsers();
+        UsersListResponse response = new UsersListResponse(users);
+        return Mono.just(response);
     }
 
-    @MessageMapping("usersStream")
-    Flux<User> usersStream(UserStreamRequest request) {
+    @MessageMapping("streamRandomUser")
+    Flux<User> streamRandomUser(UserStreamRequest request) {
         log.info("Handling request for usersStream.");
         List<User> users = userRepository.getUsers();
         Stream<User> userStream = Stream.generate(() -> {
@@ -36,9 +38,9 @@ public class UserRSocketController {
         return Flux.fromStream(userStream).delayElements(Duration.ofSeconds(1));
     }
 
-    @MessageMapping("userById")
-    public Mono<User> userById(GetUserByIdRequest request) {
+    @MessageMapping("getUserById")
+    public Mono<User> getUserById(GetUserByIdRequest request) {
         log.info("Handling request for userById id: {}.", request.getId());
         return Mono.just(this.userRepository.getUserById(request.getId()));
-    };
+    }
 }
