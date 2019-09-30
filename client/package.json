@@ -34,6 +34,7 @@
     "@babel/runtime": "^7.6.0",
     "fs-jetpack": "^2.2.2",
     "google-protobuf": "^3.10.0-rc.1",
+    "rsocket-core": "0.0.10",
     "rsocket-flowable": "0.0.10",
     "rsocket-rpc-core": "^0.1.6",
     "rsocket-rpc-frames": "^0.1.6",

@@ -2,49 +2,28 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import { UserServiceClient } from './generated/rsocket/UserService_rsocket_pb';
-import { GetUserByIdRequest } from './generated/rsocket/UserService_pb';
+import {UserServiceClient} from './generated/rsocket/UserService_rsocket_pb';
+import {GetUserByIdRequest} from './generated/rsocket/UserService_pb';
 import client from './RSocketClient';
 
-// client.connect().subscribe({
-//     onComplete: (rSocket) => {
-//         console.log(rSocket);
-//     },
-//     onSubscribe: (_subscription) => {
-//         console.log(_subscription)
-//     },
-//     onError: error => console.log(`RSocket error: ${error.message}`),
-// });
-
-// client.connect().subscribe({
-//     onComplete: rsocket => {
-//         console.log('onComplete');
-//     },
-//     onError: error => {
-//         console.error("Failed to connect to local RSocket server.", error);
-//     }
-// });
-
-client.connect().then((rsocket) => {
-    const userService = new UserServiceClient(rsocket);
-    const x = userService.getUser(new GetUserByIdRequest(1)).subscribe({
-        onComplete: data => console.log(data),
-        onError: error => console.error(error),
-        onSubscribe: cancel => {/* call cancel() to stop onComplete/onError */},
-    });
-    console.log(x);
+client.connect().subscribe({
+    onComplete: rsocket => {
+        const service = new UserServiceClient(rsocket);
+        const request = new GetUserByIdRequest([1]);
+        service.getUserById(request).subscribe({
+            onComplete: (response) => {
+                console.log(response.getUser().toObject())
+            },
+            onError: (err) => {
+                console.error(err);
+            }
+        });
+        console.log("Success! We have established an RSocket connection.");
+    },
+    onError: error => {
+        console.log("Failed to connect to local RSocket server.", error);
+    }
 });
-
-// const userService = new UserServiceClient(rsocket);
-
-// userService.getUser(new GetUserByIdRequest(1)).subscribe({
-//     onComplete: (res) => {
-//         console.log(res);
-//     },
-//     onError: (error) => {
-//         console.error(error);
-//     }
-// });
 
 ReactDOM.render(<App/>, document.getElementById('root'));
 

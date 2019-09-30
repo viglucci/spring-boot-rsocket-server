@@ -7,9 +7,9 @@ const fileName = arguments[0];
 
 const PROTOC_GEN_PLUGIN_PATH = path.resolve("./node_modules/.bin/rsocket_rpc_js_protoc_plugin.cmd");
 const OUT_DIR = path.resolve("./src/generated/rsocket");
-const PROTO_PATH = path.resolve(`../src/proto/`);
+const PROTO_PATH = path.resolve(`../src/main/proto/`);
 const RSOCKET_PROTO_PATH = path.resolve("node_modules/rsocket-rpc-protobuf/proto");
-const INPUT_PATH = path.resolve(`../src/proto/${fileName}.proto`);
+const INPUT_PATH = path.resolve(`../src/main/proto/${fileName}.proto`);
 
 let cmd = [
     `protoc`,

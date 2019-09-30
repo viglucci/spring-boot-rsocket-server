@@ -111,9 +111,9 @@ proto.com.solidice.springbootrsocketserver.rpc.proto.User.prototype.toObject = f
  */
 proto.com.solidice.springbootrsocketserver.rpc.proto.User.toObject = function(includeInstance, msg) {
   var f, obj = {
-    email: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    username: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    id: jspb.Message.getFieldWithDefault(msg, 3, 0)
+    id: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    email: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    username: jspb.Message.getFieldWithDefault(msg, 3, "")
   };
 
   if (includeInstance) {
@@ -151,16 +151,16 @@ proto.com.solidice.springbootrsocketserver.rpc.proto.User.deserializeBinaryFromR
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setEmail(value);
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setId(value);
       break;
     case 2:
       var value = /** @type {string} */ (reader.readString());
-      msg.setUsername(value);
+      msg.setEmail(value);
       break;
     case 3:
-      var value = /** @type {number} */ (reader.readInt32());
-      msg.setId(value);
+      var value = /** @type {string} */ (reader.readString());
+      msg.setUsername(value);
       break;
     default:
       reader.skipField();
@@ -191,23 +191,23 @@ proto.com.solidice.springbootrsocketserver.rpc.proto.User.prototype.serializeBin
  */
 proto.com.solidice.springbootrsocketserver.rpc.proto.User.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getEmail();
-  if (f.length > 0) {
-    writer.writeString(
+  f = message.getId();
+  if (f !== 0) {
+    writer.writeInt32(
       1,
       f
     );
   }
-  f = message.getUsername();
+  f = message.getEmail();
   if (f.length > 0) {
     writer.writeString(
       2,
       f
     );
   }
-  f = message.getId();
-  if (f !== 0) {
-    writer.writeInt32(
+  f = message.getUsername();
+  if (f.length > 0) {
+    writer.writeString(
       3,
       f
     );
@@ -216,47 +216,47 @@ proto.com.solidice.springbootrsocketserver.rpc.proto.User.serializeBinaryToWrite
 
 
 /**
- * optional string email = 1;
- * @return {string}
- */
-proto.com.solidice.springbootrsocketserver.rpc.proto.User.prototype.getEmail = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
-};
-
-
-/** @param {string} value */
-proto.com.solidice.springbootrsocketserver.rpc.proto.User.prototype.setEmail = function(value) {
-  jspb.Message.setProto3StringField(this, 1, value);
-};
-
-
-/**
- * optional string username = 2;
- * @return {string}
- */
-proto.com.solidice.springbootrsocketserver.rpc.proto.User.prototype.getUsername = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
-};
-
-
-/** @param {string} value */
-proto.com.solidice.springbootrsocketserver.rpc.proto.User.prototype.setUsername = function(value) {
-  jspb.Message.setProto3StringField(this, 2, value);
-};
-
-
-/**
- * optional int32 id = 3;
+ * optional int32 id = 1;
  * @return {number}
  */
 proto.com.solidice.springbootrsocketserver.rpc.proto.User.prototype.getId = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
 };
 
 
 /** @param {number} value */
 proto.com.solidice.springbootrsocketserver.rpc.proto.User.prototype.setId = function(value) {
-  jspb.Message.setProto3IntField(this, 3, value);
+  jspb.Message.setProto3IntField(this, 1, value);
+};
+
+
+/**
+ * optional string email = 2;
+ * @return {string}
+ */
+proto.com.solidice.springbootrsocketserver.rpc.proto.User.prototype.getEmail = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/** @param {string} value */
+proto.com.solidice.springbootrsocketserver.rpc.proto.User.prototype.setEmail = function(value) {
+  jspb.Message.setProto3StringField(this, 2, value);
+};
+
+
+/**
+ * optional string username = 3;
+ * @return {string}
+ */
+proto.com.solidice.springbootrsocketserver.rpc.proto.User.prototype.getUsername = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/** @param {string} value */
+proto.com.solidice.springbootrsocketserver.rpc.proto.User.prototype.setUsername = function(value) {
+  jspb.Message.setProto3StringField(this, 3, value);
 };
 
 
@@ -292,7 +292,7 @@ proto.com.solidice.springbootrsocketserver.rpc.proto.GetUserByIdRequest.prototyp
  */
 proto.com.solidice.springbootrsocketserver.rpc.proto.GetUserByIdRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    id: jspb.Message.getFieldWithDefault(msg, 1, 0)
+    userid: jspb.Message.getFieldWithDefault(msg, 1, 0)
   };
 
   if (includeInstance) {
@@ -331,7 +331,7 @@ proto.com.solidice.springbootrsocketserver.rpc.proto.GetUserByIdRequest.deserial
     switch (field) {
     case 1:
       var value = /** @type {number} */ (reader.readInt32());
-      msg.setId(value);
+      msg.setUserid(value);
       break;
     default:
       reader.skipField();
@@ -362,7 +362,7 @@ proto.com.solidice.springbootrsocketserver.rpc.proto.GetUserByIdRequest.prototyp
  */
 proto.com.solidice.springbootrsocketserver.rpc.proto.GetUserByIdRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getId();
+  f = message.getUserid();
   if (f !== 0) {
     writer.writeInt32(
       1,
@@ -373,16 +373,16 @@ proto.com.solidice.springbootrsocketserver.rpc.proto.GetUserByIdRequest.serializ
 
 
 /**
- * optional int32 id = 1;
+ * optional int32 userId = 1;
  * @return {number}
  */
-proto.com.solidice.springbootrsocketserver.rpc.proto.GetUserByIdRequest.prototype.getId = function() {
+proto.com.solidice.springbootrsocketserver.rpc.proto.GetUserByIdRequest.prototype.getUserid = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
 };
 
 
 /** @param {number} value */
-proto.com.solidice.springbootrsocketserver.rpc.proto.GetUserByIdRequest.prototype.setId = function(value) {
+proto.com.solidice.springbootrsocketserver.rpc.proto.GetUserByIdRequest.prototype.setUserid = function(value) {
   jspb.Message.setProto3IntField(this, 1, value);
 };
 
