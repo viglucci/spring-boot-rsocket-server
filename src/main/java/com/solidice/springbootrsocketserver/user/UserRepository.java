@@ -9,9 +9,15 @@ import java.util.List;
 public class UserRepository {
     private final List<User> usersList = new ArrayList<User>() {
         {
-            add(new User("user1@email.com", "user1", 1));
-            add(new User("user2@email.com", "user2", 2));
-            add(new User("user3@email.com", "user3", 3));
+            for (var i = 0; i < 10; i++) {
+                User u = User
+                    .builder()
+                    .id(i)
+                    .username("user" + i)
+                    .email("user" + i + "@email.com")
+                    .build();
+                add(u);
+            }
         }
     };
 
