@@ -8,6 +8,7 @@ var rsocket_rpc_tracing = require('rsocket-rpc-tracing');
 var rsocket_rpc_metrics = require('rsocket-rpc-metrics').Metrics;
 var rsocket_flowable = require('rsocket-flowable');
 var UserService_pb = require('./UserService_pb.js');
+var google_protobuf_empty_pb = require('google-protobuf/google/protobuf/empty_pb.js');
 
 var UserServiceClient = function () {
   function UserServiceClient(rs, tracer, meterRegistry) {
@@ -15,6 +16,8 @@ var UserServiceClient = function () {
     this._tracer = tracer;
     this.getUserByIdTrace = rsocket_rpc_tracing.traceSingle(tracer, "UserService", {"rsocket.rpc.service": "com.solidice.springbootrsocketserver.rpc.proto.UserService"}, {"method": "getUserById"}, {"rsocket.rpc.role": "client"});
     this.getUserByIdMetrics = rsocket_rpc_metrics.timedSingle(meterRegistry, "UserService", {"service": "com.solidice.springbootrsocketserver.rpc.proto.UserService"}, {"method": "getUserById"}, {"role": "client"});
+    this.streamRandomUsersTrace = rsocket_rpc_tracing.trace(tracer, "UserService", {"rsocket.rpc.service": "com.solidice.springbootrsocketserver.rpc.proto.UserService"}, {"method": "streamRandomUsers"}, {"rsocket.rpc.role": "client"});
+    this.streamRandomUsersMetrics = rsocket_rpc_metrics.timed(meterRegistry, "UserService", {"service": "com.solidice.springbootrsocketserver.rpc.proto.UserService"}, {"method": "streamRandomUsers"}, {"role": "client"});
   }
   UserServiceClient.prototype.getUserById = function getUserById(message, metadata) {
     const map = {};
@@ -24,6 +27,25 @@ var UserServiceClient = function () {
         var tracingMetadata = rsocket_rpc_tracing.mapToBuffer(map);
         var metadataBuf = rsocket_rpc_frames.encodeMetadata('com.solidice.springbootrsocketserver.rpc.proto.UserService', 'GetUserById', tracingMetadata, metadata || Buffer.alloc(0));
           this._rs.requestResponse({
+            data: dataBuf,
+            metadata: metadataBuf
+          }).map(function (payload) {
+            //TODO: resolve either 'https://github.com/rsocket/rsocket-js/issues/19' or 'https://github.com/google/protobuf/issues/1319'
+            var binary = !payload.data || payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);
+            return UserService_pb.GetUserByIdResponse.deserializeBinary(binary);
+          }).subscribe(subscriber);
+        })
+      )
+    );
+  };
+  UserServiceClient.prototype.streamRandomUsers = function streamRandomUsers(message, metadata) {
+    const map = {};
+    return this.streamRandomUsersMetrics(
+      this.streamRandomUsersTrace(map)(new rsocket_flowable.Flowable(subscriber => {
+        var dataBuf = Buffer.from(message.serializeBinary());
+        var tracingMetadata = rsocket_rpc_tracing.mapToBuffer(map);
+        var metadataBuf = rsocket_rpc_frames.encodeMetadata('com.solidice.springbootrsocketserver.rpc.proto.UserService', 'StreamRandomUsers', tracingMetadata, metadata || Buffer.alloc(0));
+        this._rs.requestStream({
             data: dataBuf,
             metadata: metadataBuf
           }).map(function (payload) {
@@ -46,6 +68,8 @@ var UserServiceServer = function () {
     this._tracer = tracer;
     this.getUserByIdTrace = rsocket_rpc_tracing.traceSingleAsChild(tracer, "UserService", {"rsocket.rpc.service": "com.solidice.springbootrsocketserver.rpc.proto.UserService"}, {"method": "getUserById"}, {"rsocket.rpc.role": "server"});
     this.getUserByIdMetrics = rsocket_rpc_metrics.timedSingle(meterRegistry, "UserService", {"service": "com.solidice.springbootrsocketserver.rpc.proto.UserService"}, {"method": "getUserById"}, {"role": "server"});
+    this.streamRandomUsersTrace = rsocket_rpc_tracing.traceAsChild(tracer, "UserService", {"rsocket.rpc.service": "com.solidice.springbootrsocketserver.rpc.proto.UserService"}, {"method": "streamRandomUsers"}, {"rsocket.rpc.role": "server"});
+    this.streamRandomUsersMetrics = rsocket_rpc_metrics.timed(meterRegistry, "UserService", {"service": "com.solidice.springbootrsocketserver.rpc.proto.UserService"}, {"method": "streamRandomUsers"}, {"role": "server"});
     this._channelSwitch = (payload, restOfMessages) => {
       if (payload.metadata == null) {
         return rsocket_flowable.Flowable.error(new Error('metadata is empty'));
@@ -94,7 +118,35 @@ var UserServiceServer = function () {
     }
   };
   UserServiceServer.prototype.requestStream = function requestStream(payload) {
-    return rsocket_flowable.Flowable.error(new Error('requestStream() is not implemented'));
+    try {
+      if (payload.metadata == null) {
+        return rsocket_flowable.Flowable.error(new Error('metadata is empty'));
+      }
+      var method = rsocket_rpc_frames.getMethod(payload.metadata);
+      var spanContext = rsocket_rpc_tracing.deserializeTraceData(this._tracer, payload.metadata);
+      switch (method) {
+        case 'StreamRandomUsers':
+          return this.streamRandomUsersMetrics(
+            this.streamRandomUsersTrace(spanContext)(new rsocket_flowable.Flowable(subscriber => {
+              var binary = !payload.data || payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);
+              return this._service
+                .streamRandomUsers(google_protobuf_empty_pb.Empty.deserializeBinary(binary), payload.metadata)
+                .map(function (message) {
+                  return {
+                    data: Buffer.from(message.serializeBinary()),
+                    metadata: Buffer.alloc(0)
+                  }
+                }).subscribe(subscriber);
+              }
+            )
+          )
+        );
+        default:
+          return rsocket_flowable.Flowable.error(new Error('unknown method'));
+      }
+    } catch (error) {
+      return rsocket_flowable.Flowable.error(error);
+    }
   };
   UserServiceServer.prototype.requestChannel = function requestChannel(payloads) {
     return new rsocket_flowable.Flowable(s => payloads.subscribe(s)).lift(s =>

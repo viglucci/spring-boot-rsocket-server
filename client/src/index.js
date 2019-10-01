@@ -2,15 +2,18 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import {MAX_STREAM_ID} from 'rsocket-core';
 import {UserServiceClient} from './generated/rsocket/UserService_rsocket_pb';
 import {GetUserByIdRequest} from './generated/rsocket/UserService_pb';
+import {Empty} from 'google-protobuf/google/protobuf/empty_pb.js';
+
 import client from './RSocketClient';
 
 client.connect().subscribe({
     onComplete: rsocket => {
         const service = new UserServiceClient(rsocket);
-        const request = new GetUserByIdRequest([1]);
-        service.getUserById(request).subscribe({
+        const getUserByIdRequest = new GetUserByIdRequest([1]);
+        service.getUserById(getUserByIdRequest).subscribe({
             onComplete: (response) => {
                 console.log(response.getUser().toObject())
             },
@@ -18,6 +21,15 @@ client.connect().subscribe({
                 console.error(err);
             }
         });
+
+        service.streamRandomUsers(new Empty()).subscribe({
+            onComplete: () => console.log('done'),
+            onError: error => console.error(error),
+            onNext: value => console.log(value.getUser().toObject()),
+            // Nothing happens until `request(n)` is called
+            onSubscribe: subscription => subscription.request(MAX_STREAM_ID),
+        });
+
         console.log("Success! We have established an RSocket connection.");
     },
     onError: error => {

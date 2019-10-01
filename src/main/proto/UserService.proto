@@ -2,10 +2,12 @@ syntax = "proto3";
 
 package com.solidice.springbootrsocketserver.rpc.proto;
 
+import "google/protobuf/empty.proto";
+
 option java_outer_classname = "UserServiceProto";
 option java_multiple_files = true;
 
-message User {
+message UserMessage {
     int32 id = 1;
     string email = 2;
     string username = 3;
@@ -16,9 +18,10 @@ message GetUserByIdRequest {
 }
 
 message GetUserByIdResponse {
-    User user = 1;
+    UserMessage user = 1;
 }
 
 service UserService {
     rpc GetUserById (GetUserByIdRequest) returns (GetUserByIdResponse) {}
+    rpc StreamRandomUsers (google.protobuf.Empty) returns (stream GetUserByIdResponse) {}
 }

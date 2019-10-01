@@ -13,6 +13,8 @@ var jspb = require('google-protobuf');
 var goog = jspb;
 var global = Function('return this')();
 
+var google_protobuf_empty_pb = require('google-protobuf/google/protobuf/empty_pb.js');
+goog.object.extend(proto, google_protobuf_empty_pb);
 goog.exportSymbol('proto.com.solidice.springbootrsocketserver.rpc.proto.GetUserByIdRequest', null, global);
 goog.exportSymbol('proto.com.solidice.springbootrsocketserver.rpc.proto.GetUserByIdResponse', null, global);
 goog.exportSymbol('proto.com.solidice.springbootrsocketserver.rpc.proto.User', null, global);
