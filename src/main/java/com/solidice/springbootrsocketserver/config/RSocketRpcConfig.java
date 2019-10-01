@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import reactor.core.publisher.Mono;
 
 @Configuration
-public class RSocketConfig {
+public class RSocketRpcConfig {
 
     @Value("${rsocket.rpc.websocket.port}")
     Integer rpcRSocketWsServerTransportPort;
@@ -33,11 +33,9 @@ public class RSocketConfig {
 
     @Bean(name = "rpcSocketAcceptor")
     public SocketAcceptor rpcSocketAcceptor(
-        UserServiceServer userServiceServer,
-        BlockingUserServiceServer blockingUserServiceServer) {
+        UserServiceServer userServiceServer) {
         RequestHandlingRSocket requestHandlingRSocket = new RequestHandlingRSocket(
-            userServiceServer,
-            blockingUserServiceServer
+            userServiceServer
         );
         return ((setup, sendingSocket) -> Mono.just(requestHandlingRSocket));
     }
