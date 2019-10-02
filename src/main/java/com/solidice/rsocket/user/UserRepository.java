@@ -9,7 +9,7 @@ import java.util.List;
 public class UserRepository {
     private final List<User> usersList = new ArrayList<User>() {
         {
-            for (var i = 0; i < 10; i++) {
+            for (var i = 0; i < 100; i++) {
                 User u = User
                     .builder()
                     .id(i)

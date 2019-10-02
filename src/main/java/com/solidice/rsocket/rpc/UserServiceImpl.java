@@ -5,6 +5,7 @@ import com.solidice.rsocket.generated.proto.GetUserByIdRequestMessage;
 import com.solidice.rsocket.generated.proto.GetUserByIdResponseMessage;
 import com.solidice.rsocket.generated.proto.UserMessage;
 import com.solidice.rsocket.generated.proto.UserService;
+import com.solidice.rsocket.user.RandomUserEmitter;
 import com.solidice.rsocket.user.User;
 import com.solidice.rsocket.user.UserRepository;
 import io.netty.buffer.ByteBuf;
@@ -14,19 +15,16 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Stream;
-
 @Service
 @Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final RandomUserEmitter userEmitter;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, RandomUserEmitter userEmitter) {
+        this.userEmitter = userEmitter;
         this.userRepository = userRepository;
     }
 
@@ -55,29 +53,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Flux<GetUserByIdResponseMessage> streamRandomUsers(Empty message, ByteBuf metadata) {
-
         log.info("Handling request for streamRandomUsers.");
 
-        List<User> users = userRepository.getUsers();
+        return this
+            .userEmitter
+            .getEmitter()
+            .map(this::buildUserResponseMessage);
+    }
 
-        Stream<GetUserByIdResponseMessage> responseStream = Stream.generate(() -> {
-            Random rand = new Random();
-            User user = users.get(rand.nextInt(users.size()));
-            UserMessage userMessage = UserMessage
-                .newBuilder()
-                .setId(user.getId())
-                .setEmail(user.getEmail())
-                .setUsername(user.getUsername())
-                .build();
+    private GetUserByIdResponseMessage buildUserResponseMessage(User user) {
+        UserMessage userMessage = UserMessage
+            .newBuilder()
+            .setId(user.getId())
+            .setEmail(user.getEmail())
+            .setUsername(user.getUsername())
+            .build();
 
-            return GetUserByIdResponseMessage
-                .newBuilder()
-                .setUser(userMessage)
-                .build();
-        });
-
-        return Flux
-            .fromStream(responseStream)
-            .delayElements(Duration.ofMillis(250));
+        return GetUserByIdResponseMessage
+            .newBuilder()
+            .setUser(userMessage)
+            .build();
     }
 }
