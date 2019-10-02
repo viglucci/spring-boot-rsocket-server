@@ -1,12 +1,15 @@
-package com.solidice.springbootrsocketserver.user;
+package com.solidice.rsocket.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetUserByIdRequest {
-    private int id;
+public class UsersListResponse {
+
+    List<User> users;
 }

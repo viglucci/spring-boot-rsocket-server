@@ -1,4 +1,4 @@
-package com.solidice.springbootrsocketserver.user;
+package com.solidice.rsocket.user;
 
 import org.springframework.stereotype.Component;
 

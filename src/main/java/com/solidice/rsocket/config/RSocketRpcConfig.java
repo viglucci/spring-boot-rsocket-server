@@ -1,7 +1,6 @@
-package com.solidice.springbootrsocketserver.config;
+package com.solidice.rsocket.config;
 
-import com.solidice.springbootrsocketserver.rpc.proto.BlockingUserServiceServer;
-import com.solidice.springbootrsocketserver.rpc.proto.UserServiceServer;
+import com.solidice.rsocket.generated.proto.UserServiceServer;
 import io.rsocket.RSocketFactory;
 import io.rsocket.SocketAcceptor;
 import io.rsocket.rpc.rsocket.RequestHandlingRSocket;

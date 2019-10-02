@@ -1,4 +1,4 @@
-package com.solidice.springbootrsocketserver;
+package com.solidice.rsocket;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

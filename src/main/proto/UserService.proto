@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package com.solidice.springbootrsocketserver.rpc.proto;
+package com.solidice.rsocket.generated.proto;
 
 import "google/protobuf/empty.proto";
 
@@ -13,15 +13,15 @@ message UserMessage {
     string username = 3;
 }
 
-message GetUserByIdRequest {
+message GetUserByIdRequestMessage {
     int32 userId = 1;
 }
 
-message GetUserByIdResponse {
+message GetUserByIdResponseMessage {
     UserMessage user = 1;
 }
 
 service UserService {
-    rpc GetUserById (GetUserByIdRequest) returns (GetUserByIdResponse) {}
-    rpc StreamRandomUsers (google.protobuf.Empty) returns (stream GetUserByIdResponse) {}
+    rpc GetUserById (GetUserByIdRequestMessage) returns (GetUserByIdResponseMessage) {}
+    rpc StreamRandomUsers (google.protobuf.Empty) returns (stream GetUserByIdResponseMessage) {}
 }

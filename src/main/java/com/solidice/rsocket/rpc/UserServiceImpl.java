@@ -1,11 +1,12 @@
-package com.solidice.springbootrsocketserver.rpc;
+package com.solidice.rsocket.rpc;
 
 import com.google.protobuf.Empty;
-import com.solidice.springbootrsocketserver.rpc.proto.GetUserByIdRequest;
-import com.solidice.springbootrsocketserver.rpc.proto.GetUserByIdResponse;
-import com.solidice.springbootrsocketserver.rpc.proto.UserMessage;
-import com.solidice.springbootrsocketserver.user.User;
-import com.solidice.springbootrsocketserver.user.UserRepository;
+import com.solidice.rsocket.generated.proto.GetUserByIdRequestMessage;
+import com.solidice.rsocket.generated.proto.GetUserByIdResponseMessage;
+import com.solidice.rsocket.generated.proto.UserMessage;
+import com.solidice.rsocket.generated.proto.UserService;
+import com.solidice.rsocket.user.User;
+import com.solidice.rsocket.user.UserRepository;
 import io.netty.buffer.ByteBuf;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,37 +21,46 @@ import java.util.stream.Stream;
 
 @Service
 @Slf4j
-public class UserService implements com.solidice.springbootrsocketserver.rpc.proto.UserService {
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
-    public Mono<GetUserByIdResponse> getUserById(GetUserByIdRequest message, ByteBuf metadata) {
+    public Mono<GetUserByIdResponseMessage> getUserById(
+        GetUserByIdRequestMessage message,
+        ByteBuf metadata) {
+
         int userId = message.getUserId();
         User user = this.userRepository.getUserById(userId);
+
         UserMessage userMessage = UserMessage
             .newBuilder()
             .setId(user.getId())
             .setEmail(user.getEmail())
             .setUsername(user.getUsername())
             .build();
-        GetUserByIdResponse response = GetUserByIdResponse
+
+        GetUserByIdResponseMessage response = GetUserByIdResponseMessage
             .newBuilder()
             .setUser(userMessage)
             .build();
+
         return Mono.just(response);
     }
 
     @Override
-    public Flux<GetUserByIdResponse> streamRandomUsers(Empty message, ByteBuf metadata) {
+    public Flux<GetUserByIdResponseMessage> streamRandomUsers(Empty message, ByteBuf metadata) {
+
         log.info("Handling request for streamRandomUsers.");
+
         List<User> users = userRepository.getUsers();
-        Stream<GetUserByIdResponse> responseStream = Stream.generate(() -> {
+
+        Stream<GetUserByIdResponseMessage> responseStream = Stream.generate(() -> {
             Random rand = new Random();
             User user = users.get(rand.nextInt(users.size()));
             UserMessage userMessage = UserMessage
@@ -59,11 +69,15 @@ public class UserService implements com.solidice.springbootrsocketserver.rpc.pro
                 .setEmail(user.getEmail())
                 .setUsername(user.getUsername())
                 .build();
-            return GetUserByIdResponse
+
+            return GetUserByIdResponseMessage
                 .newBuilder()
                 .setUser(userMessage)
                 .build();
         });
-        return Flux.fromStream(responseStream).delayElements(Duration.ofMillis(500));
+
+        return Flux
+            .fromStream(responseStream)
+            .delayElements(Duration.ofMillis(250));
     }
 }

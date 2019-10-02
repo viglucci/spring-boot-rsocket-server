@@ -14,10 +14,10 @@ var UserServiceClient = function () {
   function UserServiceClient(rs, tracer, meterRegistry) {
     this._rs = rs;
     this._tracer = tracer;
-    this.getUserByIdTrace = rsocket_rpc_tracing.traceSingle(tracer, "UserService", {"rsocket.rpc.service": "com.solidice.springbootrsocketserver.rpc.proto.UserService"}, {"method": "getUserById"}, {"rsocket.rpc.role": "client"});
-    this.getUserByIdMetrics = rsocket_rpc_metrics.timedSingle(meterRegistry, "UserService", {"service": "com.solidice.springbootrsocketserver.rpc.proto.UserService"}, {"method": "getUserById"}, {"role": "client"});
-    this.streamRandomUsersTrace = rsocket_rpc_tracing.trace(tracer, "UserService", {"rsocket.rpc.service": "com.solidice.springbootrsocketserver.rpc.proto.UserService"}, {"method": "streamRandomUsers"}, {"rsocket.rpc.role": "client"});
-    this.streamRandomUsersMetrics = rsocket_rpc_metrics.timed(meterRegistry, "UserService", {"service": "com.solidice.springbootrsocketserver.rpc.proto.UserService"}, {"method": "streamRandomUsers"}, {"role": "client"});
+    this.getUserByIdTrace = rsocket_rpc_tracing.traceSingle(tracer, "UserService", {"rsocket.rpc.service": "com.solidice.rsocket.generated.proto.UserService"}, {"method": "getUserById"}, {"rsocket.rpc.role": "client"});
+    this.getUserByIdMetrics = rsocket_rpc_metrics.timedSingle(meterRegistry, "UserService", {"service": "com.solidice.rsocket.generated.proto.UserService"}, {"method": "getUserById"}, {"role": "client"});
+    this.streamRandomUsersTrace = rsocket_rpc_tracing.trace(tracer, "UserService", {"rsocket.rpc.service": "com.solidice.rsocket.generated.proto.UserService"}, {"method": "streamRandomUsers"}, {"rsocket.rpc.role": "client"});
+    this.streamRandomUsersMetrics = rsocket_rpc_metrics.timed(meterRegistry, "UserService", {"service": "com.solidice.rsocket.generated.proto.UserService"}, {"method": "streamRandomUsers"}, {"role": "client"});
   }
   UserServiceClient.prototype.getUserById = function getUserById(message, metadata) {
     const map = {};
@@ -25,14 +25,14 @@ var UserServiceClient = function () {
       this.getUserByIdTrace(map)(new rsocket_flowable.Single(subscriber => {
         var dataBuf = Buffer.from(message.serializeBinary());
         var tracingMetadata = rsocket_rpc_tracing.mapToBuffer(map);
-        var metadataBuf = rsocket_rpc_frames.encodeMetadata('com.solidice.springbootrsocketserver.rpc.proto.UserService', 'GetUserById', tracingMetadata, metadata || Buffer.alloc(0));
+        var metadataBuf = rsocket_rpc_frames.encodeMetadata('com.solidice.rsocket.generated.proto.UserService', 'GetUserById', tracingMetadata, metadata || Buffer.alloc(0));
           this._rs.requestResponse({
             data: dataBuf,
             metadata: metadataBuf
           }).map(function (payload) {
             //TODO: resolve either 'https://github.com/rsocket/rsocket-js/issues/19' or 'https://github.com/google/protobuf/issues/1319'
             var binary = !payload.data || payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);
-            return UserService_pb.GetUserByIdResponse.deserializeBinary(binary);
+            return UserService_pb.GetUserByIdResponseMessage.deserializeBinary(binary);
           }).subscribe(subscriber);
         })
       )
@@ -44,14 +44,14 @@ var UserServiceClient = function () {
       this.streamRandomUsersTrace(map)(new rsocket_flowable.Flowable(subscriber => {
         var dataBuf = Buffer.from(message.serializeBinary());
         var tracingMetadata = rsocket_rpc_tracing.mapToBuffer(map);
-        var metadataBuf = rsocket_rpc_frames.encodeMetadata('com.solidice.springbootrsocketserver.rpc.proto.UserService', 'StreamRandomUsers', tracingMetadata, metadata || Buffer.alloc(0));
-        this._rs.requestStream({
+        var metadataBuf = rsocket_rpc_frames.encodeMetadata('com.solidice.rsocket.generated.proto.UserService', 'StreamRandomUsers', tracingMetadata, metadata || Buffer.alloc(0));
+          this._rs.requestStream({
             data: dataBuf,
             metadata: metadataBuf
           }).map(function (payload) {
             //TODO: resolve either 'https://github.com/rsocket/rsocket-js/issues/19' or 'https://github.com/google/protobuf/issues/1319'
             var binary = !payload.data || payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);
-            return UserService_pb.GetUserByIdResponse.deserializeBinary(binary);
+            return UserService_pb.GetUserByIdResponseMessage.deserializeBinary(binary);
           }).subscribe(subscriber);
         })
       )
@@ -66,10 +66,10 @@ var UserServiceServer = function () {
   function UserServiceServer(service, tracer, meterRegistry) {
     this._service = service;
     this._tracer = tracer;
-    this.getUserByIdTrace = rsocket_rpc_tracing.traceSingleAsChild(tracer, "UserService", {"rsocket.rpc.service": "com.solidice.springbootrsocketserver.rpc.proto.UserService"}, {"method": "getUserById"}, {"rsocket.rpc.role": "server"});
-    this.getUserByIdMetrics = rsocket_rpc_metrics.timedSingle(meterRegistry, "UserService", {"service": "com.solidice.springbootrsocketserver.rpc.proto.UserService"}, {"method": "getUserById"}, {"role": "server"});
-    this.streamRandomUsersTrace = rsocket_rpc_tracing.traceAsChild(tracer, "UserService", {"rsocket.rpc.service": "com.solidice.springbootrsocketserver.rpc.proto.UserService"}, {"method": "streamRandomUsers"}, {"rsocket.rpc.role": "server"});
-    this.streamRandomUsersMetrics = rsocket_rpc_metrics.timed(meterRegistry, "UserService", {"service": "com.solidice.springbootrsocketserver.rpc.proto.UserService"}, {"method": "streamRandomUsers"}, {"role": "server"});
+    this.getUserByIdTrace = rsocket_rpc_tracing.traceSingleAsChild(tracer, "UserService", {"rsocket.rpc.service": "com.solidice.rsocket.generated.proto.UserService"}, {"method": "getUserById"}, {"rsocket.rpc.role": "server"});
+    this.getUserByIdMetrics = rsocket_rpc_metrics.timedSingle(meterRegistry, "UserService", {"service": "com.solidice.rsocket.generated.proto.UserService"}, {"method": "getUserById"}, {"role": "server"});
+    this.streamRandomUsersTrace = rsocket_rpc_tracing.traceAsChild(tracer, "UserService", {"rsocket.rpc.service": "com.solidice.rsocket.generated.proto.UserService"}, {"method": "streamRandomUsers"}, {"rsocket.rpc.role": "server"});
+    this.streamRandomUsersMetrics = rsocket_rpc_metrics.timed(meterRegistry, "UserService", {"service": "com.solidice.rsocket.generated.proto.UserService"}, {"method": "streamRandomUsers"}, {"role": "server"});
     this._channelSwitch = (payload, restOfMessages) => {
       if (payload.metadata == null) {
         return rsocket_flowable.Flowable.error(new Error('metadata is empty'));
@@ -99,7 +99,7 @@ var UserServiceServer = function () {
             this.getUserByIdTrace(spanContext)(new rsocket_flowable.Single(subscriber => {
               var binary = !payload.data || payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);
               return this._service
-                .getUserById(UserService_pb.GetUserByIdRequest.deserializeBinary(binary), payload.metadata)
+                .getUserById(UserService_pb.GetUserByIdRequestMessage.deserializeBinary(binary), payload.metadata)
                 .map(function (message) {
                   return {
                     data: Buffer.from(message.serializeBinary()),

@@ -1,4 +1,4 @@
-package com.solidice.springbootrsocketserver;
+package com.solidice.rsocket;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,7 +9,7 @@ import org.springframework.context.annotation.FilterType;
 @ComponentScan(excludeFilters = {
     @ComponentScan.Filter(
         type = FilterType.REGEX,
-        pattern = "com.solidice.springbootrsocketserver.rpc.proto.Blocking.*"
+        pattern = "com.solidice.rsocket.generated.proto.Blocking.*"
     )
 })
 public class SpringBootRSocketServerApplication {
