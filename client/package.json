@@ -41,7 +41,7 @@
     "rsocket-rpc-protobuf": "^0.1.6",
     "rsocket-rpc-tracing": "^0.1.6",
     "rsocket-websocket-client": "0.0.10",
-    "shelljs": "^0.8.3",
+    "shelljs": "^0.8.5",
     "yargs": "^14.0.0"
   }
 }
